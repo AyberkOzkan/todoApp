@@ -18,6 +18,19 @@ function view($viewName, $pageData = []){
     }
 }
 
+function model($modelName, $pageData = [], $data_process = null){
+    global $db;
+    if ($data_process != null) {
+        $process = $data_process;
+    }
+    $data = $pageData;
+    if (file_exists(BASEDIR.'/model/'.$modelName.'.php')) {
+        return require BASEDIR.'/model/'.$modelName.'.php';
+    } else {
+        return false;
+    }
+}
+
 function assets($assetName){
     if (file_exists(BASEDIR.'/public/'.$assetName)) {
         return URL.'public/'. $assetName;
@@ -69,5 +82,15 @@ function getCookie($index){
     } else {
         return false;
     }
+}
+
+function redirect($link){
+    header('location:'.URL.$link);
+}
+
+function url($url){
+
+    global $config;
+    return URL.$config['lang'].'/'.$url;
 }
 ?>

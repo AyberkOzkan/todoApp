@@ -12,12 +12,15 @@
             </div>
             <div class="card-body">
             <p class="login-box-msg"><?= lang('Oturum Açın');?></p>
-
+            <?php 
+                if (getSession('error')) {
+                    echo "<div class='alert alert-".$_SESSION['error']['type']."'>". $_SESSION['error']['message']."</div>";
+                }
+            ?>
             
             <form action="<?= URL."login" ?>" method="post">
                 <div class="input-group mb-3">
-                <?php getSession('hata');?>
-                <input type="email" class="form-control" name="email" placeholder="<?= lang('Email');?>">
+                <input type="email" class="form-control" name="email" value="<?= $_SESSION['post']['email'] ?? '' ?>" placeholder="<?= lang('Email');?>">
                 <div class="input-group-append">
                     <div class="input-group-text">
                     <span class="fas fa-envelope"></span>
@@ -25,7 +28,7 @@
                 </div>
                 </div>
                 <div class="input-group mb-3">
-                <input type="password" class="form-control" name="password" placeholder="<?= lang('Password');?>">
+                <input type="password" class="form-control" name="password" value="<?= $_SESSION['post']['password'] ?? '' ?>" placeholder="<?= lang('Password');?>">
                 <div class="input-group-append">
                     <div class="input-group-text">
                     <span class="fas fa-lock"></span>
