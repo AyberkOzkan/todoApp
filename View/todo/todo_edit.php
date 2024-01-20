@@ -163,27 +163,82 @@
           <div class="col-lg-12">
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Kategori Ekle</h3>
+                <h3 class="card-title">Yapılacaklar Listenize Ekleyin</h3>
               </div>
               <!-- /.card-header -->
               <?php 
                 if (getSession('error')) {
                     echo "<div class='alert alert-".$_SESSION['error']['type']."'>". $_SESSION['error']['message']."</div>";
                 }
-              ?>
+            ?>
               <!-- form start -->
-              <form method="post" id="cat_add_form">
+              <form method="post" id="todo_add_form">
+                <input id="id" type="hidden" value="<?= $data['id']; ?>">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="title">Kategori Başlığı</label>
-                    <input type="text" class="form-control" name="title" id="title" value="<?= $data['title'];?>" placeholder="Kategori adı giriniz...">
-                    <input type="hidden" class="form-control" name="id" id="id" value="<?= $data['id'];?>">
+                    <label for="title">Kategori Seçiniz</label>
+                    <select class="form-control" name="category_id" id="category_id">
+                      <?php if ($data['category_id'] !== 0): ?>
+                      <option value="<?= $data['category_id']; ?>"><?= $data['category_title']; ?></option>
+                      <?php endif;?>
+                      <option value="0">- Kategori Seçimi Yapınız -</option>
+                      <?php foreach($data['categories'] as $category):?>
+                      <option value="<?= $category['id']?>"><?= $category['title']?></option>
+                      <?php endforeach;?>
+                    </select>
+                  </div>
+                  <hr>
+                  <div class="form-group">
+                    <label for="title">Başlık</label>
+                    <input type="text" class="form-control" name="title" id="title" value="<?= $data['title']; ?> " placeholder="Ne yapmak istersiniz?">
+                  </div>
+                  <div class="form-group">
+                    <label for="description">Açıklama</label>
+                    <input type="text" class="form-control" name="description" id="description" value="<?= $data['description']; ?> " placeholder="Ne yapmak istersiniz?">
+                  </div>
+                  <div class="form-group">
+                    <label for="status">Durum</label>
+                    <select name="status" id="status" class="form-control">
+                      <option <?= $data['status'] == 'a' ? 'selected="selected"' : null; ?> value="a">Aktif</option>
+                      <option <?= $data['status'] == 'p' ? 'selected="selected"' : null; ?> value="p">Pasif</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="progress">İlerleme</label>
+                    <input type="range" class="form-control" name="progress" id="progress" value="<?= $data['progress']; ?>" min="0" max="100">
+                  </div>
+                  <div class="form-group">
+                    <label for="color">Renk Seçiniz</label>
+                    <input type="color" class="form-control" name="color" id="color" value="<?= $data['color']; ?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="start_date">Başlangıç Tarihi</label>
+                    <div class="row">
+                        <?php 
+                        $start_date = !empty($data['start_date']) ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d');
+                        $start_date_time = !empty($data['start_date']) ? date('H:i', strtotime($data['start_date'])) : date('H:i');
+                        ?>
+                        <input type="date" value="<?= $start_date ?>" class="form-control col-8" name="start_date" id="start_date">
+                        <input type="time" value="<?= $start_date_time ?>" class="form-control col-4" name="start_date_time" id="start_date_time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">Bitiş Tarihi</label>
+                    <div class="row">
+                        <?php 
+                        $end_date = !empty($data['end_date']) ? date('Y-m-d', strtotime($data['end_date'])) : date('Y-m-d');
+                        $end_date_time = !empty($data['end_date']) ? date('H:i', strtotime($data['end_date'])) : date('H:i');
+                        ?>
+                        <input type="date" value="<?= $end_date ?>" class="form-control col-8" name="end_date" id="end_date">
+                        <input type="time" value="<?= $end_date_time ?>" class="form-control col-4" name="end_date_time" id="end_date_time">
+                    </div>
+                </div>
                   </div>
                 </div>
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
+                  <button type="submit" name="submit" value="1" class="btn btn-primary">Ekle</button>
                 </div>
               </form>
             </div>
@@ -214,7 +269,67 @@
 <script src="<?= assets('plugins/jquery/jquery.min.js')?>"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= assets('plugins/bootstrap/js/bootstrap.bundle.min.js')?>"></script>
+<!-- SweetAlert -->
+<script src="<?= assets('plugins/sweetalert2/sweetalert2.all.js')?>"></script> 
 <!-- AdminLTE App -->
 <script src="<?= assets('js/adminlte.min.js')?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js" integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+  const todo = document.getElementById('todo_add_form');
+  
+  todo.addEventListener('submit', (e) => {
+    // console.log('test');
+    let id = document.getElementById('id').value;
+    let title = document.getElementById('title').value;
+    let description = document.getElementById('description').value;
+    let category_id = document.getElementById('category_id').value;
+    let color = document.getElementById('color').value;
+    let start_date = document.getElementById('start_date').value;
+    let end_date = document.getElementById('end_date').value;
+    let start_date_time = document.getElementById('start_date_time').value;
+    let end_date_time = document.getElementById('end_date_time').value;
+    let status = document.getElementById('status').value;
+    let progress = document.getElementById('progress').value;
+    
+    let formData = new FormData();
+
+    formData.append('id', id );
+    formData.append('title', title );
+    formData.append('description', description );
+    formData.append('category_id', category_id );
+    formData.append('color', color );
+    formData.append('start_date', start_date );
+    formData.append('end_date', end_date );
+    formData.append('start_date_time', start_date_time );
+    formData.append('end_date_time', end_date_time );
+    formData.append('status', status );
+    formData.append('progress', progress );
+
+
+    axios.post('<?= url('api/edittodo') ?>', formData).then(response => {
+      
+      if (response.data.redirect) {
+        // console.log(response.data.redirect);
+        window.location.href = response.data.redirect;
+      } else {
+
+        Swal.fire(
+        response.data.title,
+        response.data.msg,
+        response.data.status,
+
+        );
+
+      }
+
+      
+
+        console.log(response)
+    }).catch(error => console.log(error))
+    e.preventDefault();
+  })
+
+</script>
 </body>
 </html>

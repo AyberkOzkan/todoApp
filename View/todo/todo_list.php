@@ -178,26 +178,35 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width: 10px">#</th>
                       <th>Başlık</th>
-                      <th>Oluşturma Tarihi</th>
-                      <th>Güncelleme Tarihi</th>
+                      <th>Kategori</th>
+                      <th>Başlangıç Tarihi</th>
+                      <th>Bitiş Tarihi</th>
+                      <th>İlerleme</th>
+                      <th></th>
                       <th style="width: 40px">İşlem</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php $no = 1; foreach ($data as $key => $value) :?>
-                    <tr>
-                      <td><?= $no++;?></td>
+                    <tr id="row_<?= $value['id']; ?>">
                       <td><?= $value['title']; ?></td>
-                      <td><?= $value['created_date']; ?></td>
-                      <td><?= $value['updated_date']; ?></td>
+                      <td><?= $value['category_title']; ?></td>
+                      <td><?= $value['start_date']; ?></td>
+                      <td><?= $value['end_date']; ?></td>
+                      <td>
+                        <span class="badge bg-primary"><?= $value['progress']; ?>%</span>
+                        <div class="progress progress-xs progress-striped active">
+                          <div class="progress-bar bg-primary" style="width:<?= $value['progress']; ?>%"></div>
+                        </div>
+                      </td>
+                      <td style="text-align: center;"><span class="badge bg" style="font-size: 14px; color: #<?= $value['status'] == 'a' ? '28a745': '6c757d' ?>"><?= $value['status'] == 'a' ? 'Devam Eden': 'Biten'; ?></span></td>
                       <td>
                         <div class="btn-group btn-group-sm">
-                            <a class="btn btn-sm btn-danger" href="<?= url('categories/remove/'.$value['id']);?>">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removeToDo(<?= $value['id']; ?>)">
                                 Sil
-                            </a>
-                            <a class="btn btn-sm btn-info" href="<?= url('categories/edit/'.$value['id']);?>">
+                            </button>
+                            <a class="btn btn-sm btn-info" href="<?= url('todo/edit/'.$value['id']);?>">
                                 Güncelle
                             </a>
 
@@ -239,5 +248,35 @@
 <script src="<?= assets('plugins/bootstrap/js/bootstrap.bundle.min.js')?>"></script>
 <!-- AdminLTE App -->
 <script src="<?= assets('js/adminlte.min.js')?>"></script>
+<!-- SweetAlert -->
+<script src="<?= assets('plugins/sweetalert2/sweetalert2.all.js')?>"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js" integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+  function removeToDo(id){
+    // console.log(id);
+    let formData = new FormData();
+
+    formData.append('id', id);
+
+    axios.post('<?= url('api/removetodo') ?>', formData).then(response => {
+      if(response.data.id){
+
+        let row = document.getElementById('row_'+response.data.id);
+        row.remove();
+      }
+      
+      Swal.fire(
+        response.data.title,
+        response.data.msg,
+        response.data.status,
+
+      );
+
+      // console.log(response)
+    }).catch(error => console.log(error))
+    
+  }
+</script>
 </body>
 </html>

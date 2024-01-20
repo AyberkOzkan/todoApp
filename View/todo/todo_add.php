@@ -189,22 +189,33 @@
                     <input type="text" class="form-control" name="title" id="title" placeholder="Ne yapmak istersiniz?">
                   </div>
                   <div class="form-group">
-                    <label for="title">Açıklama</label>
+                    <label for="description">Açıklama</label>
                     <input type="text" class="form-control" name="description" id="description" placeholder="Ne yapmak istersiniz?">
                   </div>
                   <div class="form-group">
-                    <label for="title">Renk Seçiniz</label>
+                    <label for="status">Durum</label>
+                    <select name="status" id="status">
+                      <option value="a">Aktif</option>
+                      <option value="p">Pasif</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="progress">İlerleme</label>
+                    <input type="range" class="form-control" name="progress" id="progress" min="0" max="100">
+                  </div>
+                  <div class="form-group">
+                    <label for="color">Renk Seçiniz</label>
                     <input type="color" class="form-control" name="color" id="color" value="#007bff">
                   </div>
                   <div class="form-group">
-                    <label for="title">Başlangıç Tarihi</label>
+                    <label for="start_date">Başlangıç Tarihi</label>
                     <div class="row">
                       <input type="date" class="form-control col-8" name="start_date" id="start_date">
                       <input type="time" class="form-control col-4" name="start_date_time" id="start_date_time">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="title">Bitiş Tarihi</label>
+                    <label for="end_date">Bitiş Tarihi</label>
                     <div class="row">
                       <input type="date" class="form-control col-8" name="end_date" id="end_date">
                       <input type="time" class="form-control col-4" name="end_date_time" id="end_date_time">
@@ -264,6 +275,8 @@
     let end_date = document.getElementById('end_date').value;
     let start_date_time = document.getElementById('start_date_time').value;
     let end_date_time = document.getElementById('end_date_time').value;
+    let status = document.getElementById('status').value;
+    let progress = document.getElementById('progress').value;
     
     let formData = new FormData();
 
@@ -275,6 +288,9 @@
     formData.append('end_date', end_date );
     formData.append('start_date_time', start_date_time );
     formData.append('end_date_time', end_date_time );
+    formData.append('status', status );
+    formData.append('progress', progress );
+
 
     axios.post('<?= url('api/addtodo') ?>', formData).then(response => {
       
