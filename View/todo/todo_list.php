@@ -200,7 +200,11 @@
                           <div class="progress-bar bg-primary" style="width:<?= $value['progress']; ?>%"></div>
                         </div>
                       </td>
-                      <td style="text-align: center;"><span class="badge bg" style="font-size: 14px; color: #<?= $value['status'] == 'a' ? '28a745': '6c757d' ?>"><?= $value['status'] == 'a' ? 'Devam Eden': 'Biten'; ?></span></td>
+                      <td style="text-align: center;">
+                          <span class="badge bg" style="font-size: 14px; color: #<?= status($value['status'])['color']; ?>">
+                              <?= status($value['status'])['title']; ?>
+                          </span>
+                      </td>
                       <td>
                         <div class="btn-group btn-group-sm">
                             <button type="button" class="btn btn-sm btn-danger" onclick="removeToDo(<?= $value['id']; ?>)">

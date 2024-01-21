@@ -158,72 +158,8 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="container-fluid">
-      <h5 class="mt-4 mb-2">Güncel Durum <code><?= date('Y-m-d'); ?></code></h5>
-      <div class="row">
-        <?php foreach($data['istatistik'] as $row):?>
-          <div class="col-md-4 col-sm-6 col-12">
-            <div class="info-box bg-gradient-<?= status($row['status'])['bg-color'] ?>">
-              <span class="info-box-icon"><i class="<?= status($row['status'])['icon'] ?>"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text"><?= status($row['status'])['title'] ?></span>
-                <span class="info-box-number"><?= $row['toplam']?></span>
-
-                <div class="progress">
-                  <div class="progress-bar" style="width: <?= number_format($row['yuzde']) ?>%"></div>
-                </div>
-                <span class="progress-description">
-                  <?= '%'. number_format($row['yuzde'], 2) ?>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-        <?php endforeach; ?>
-        </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-      <div class="row">
-      <div class="col-md-12">
-            <!-- The time line -->
-            <div class="timeline">
-              <!-- timeline time label -->
-              <?php foreach($data['surec'] as $todo):?>
-              <div class="time-label">
-                <span class="bg-info"><?= date('d.m.Y', strtotime($todo['start_date']))?></span>
-              </div>
-              <!-- /.timeline-label -->
-              <!-- timeline item -->
-              <div>
-                <i class="fa fa-angle-double-right bg-light"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fas fa-clock"></i> <?= date('H:i', strtotime($todo['start_date']))?></span>
-                  <h3 class="timeline-header">
-                    <span class="badge" style="color: #FFFFFF; background-color: <?= $todo['color']?>"> <?= $todo['category_title'];?> </span>
-                    <?= $todo['title']?>
-                  </h3>
-                  <div class="timeline-body"><?= $todo['description']?></div>
-                  </br>
-                  <span class="badge" style="color: #FFFFFF; background-color: <?= $todo['color']?>"><?= $todo['progress']; ?>%</span>
-                    <div class="progress progress-xs progress-striped active">
-                      <div class="progress-bar" style="color: #FFFFFF; background-color: <?= $todo['color']?>; width:<?= $todo['progress']; ?>%"></div>
-                    </div>
-                  
-
-                  <div class="timeline-footer">
-                    <a href="<?= url('todo/edit/'.$todo['id']); ?>" class="btn btn-sm" style="color: #FFFFFF; background-color: <?= $todo['color']?>">Git</a>
-                  </div>
-                </div>
-              </div>
-              <!-- END timeline item -->
-              <?php endforeach;?>
-              <div>
-                <i class="fas fa-clock bg-gray"></i>
-              </div>
-            </div>
-          </div>
+      <div id="calendar">
+        
       </div>
     </div>
     <!-- /.content -->
@@ -247,7 +183,24 @@
 <script src="<?= assets('plugins/jquery/jquery.min.js')?>"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= assets('plugins/bootstrap/js/bootstrap.bundle.min.js')?>"></script>
+<!-- FullCalender -->
+<script src="<?= assets('plugins/fullcalendar/main.js')?>"></script>
+<script src="<?= assets('plugins/fullcalendar/locales-all.js')?>"></script>
 <!-- AdminLTE App -->
 <script src="<?= assets('js/adminlte.min.js')?>"></script>
+
+<script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: '<?=  default_lang();?>',
+          events: '<?=  url('api/calendar/')?>'
+        });
+        calendar.render();
+      });
+
+    </script>
 </body>
 </html>

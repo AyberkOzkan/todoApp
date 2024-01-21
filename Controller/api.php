@@ -222,6 +222,22 @@
             exit();
             
         }
+    } elseif (route(1) == 'calendar') {
+        $start = get('start');
+        $end = get('end');
+        // print_r($start);
+        // print_r($end);
+        $sql = "SELECT id, title, color, start_date as start, end_date as end, CONCAT('/todoapp/todo/edit/', todos.id) as url 
+        FROM todos 
+        WHERE todos.user_id=?";
+        if ($start && $end) {
+            $sql .= "&& start_date BETWEEN '$start' AND '$end' OR end_date BETWEEN '$start' AND '$end'";
+        }
+        $q = $db->prepare($sql);
+        $get = $q->execute([getSession('id')]);
+        $array = $q->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode($array);
     }
 
 ?>

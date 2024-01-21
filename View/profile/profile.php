@@ -154,77 +154,78 @@
   ?>
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper p-3">
+  <div class="content-wrapper p-5">
 
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-      <h5 class="mt-4 mb-2">Güncel Durum <code><?= date('Y-m-d'); ?></code></h5>
-      <div class="row">
-        <?php foreach($data['istatistik'] as $row):?>
-          <div class="col-md-4 col-sm-6 col-12">
-            <div class="info-box bg-gradient-<?= status($row['status'])['bg-color'] ?>">
-              <span class="info-box-icon"><i class="<?= status($row['status'])['icon'] ?>"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text"><?= status($row['status'])['title'] ?></span>
-                <span class="info-box-number"><?= $row['toplam']?></span>
-
-                <div class="progress">
-                  <div class="progress-bar" style="width: <?= number_format($row['yuzde']) ?>%"></div>
-                </div>
-                <span class="progress-description">
-                  <?= '%'. number_format($row['yuzde'], 2) ?>
-                </span>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Profiliniz</h3>
               </div>
-              <!-- /.info-box-content -->
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="post" id="profile">
+                <div class="card-body">
+                  <hr>
+                  <div class="form-group">
+                    <label for="isim">İsim</label>
+                    <input type="text" class="form-control" name="isim" id="isim">
+                  </div>
+                  <div class="form-group">
+                    <label for="soyisim">Soyisim</label>
+                    <input type="text" class="form-control" name="soyisim" id="soyisim">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">E-posta</label>
+                    <input type="text" class="form-control" name="email" id="email">
+                  </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
+                </div>
+              </form>
             </div>
-            <!-- /.info-box -->
+            </div>
           </div>
-        <?php endforeach; ?>
+          <!-- Password Change -->
+          <div class="col-lg-12">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Şifrenizi Değiştirin</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="post" id="password_change">
+                <div class="card-body">
+                  <hr>
+                  <div class="form-group">
+                    <label for="old_password">Eski Şifreniz</label>
+                    <input type="password" class="form-control" name="old_password" id="old_password">
+                  </div>
+                  <div class="form-group">
+                    <label for="Password">Yeni Şifreniz</label>
+                    <input type="password" class="form-control" name="Password" id="Password">
+                  </div>
+                  <div class="form-group">
+                    <label for="password_again">Tekrar Yeni Şifreniz</label>
+                    <input type="password" class="form-control" name="password_again" id="password_again">
+                  </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" name="submit" value="1" class="btn btn-primary">Güncelle</button>
+                </div>
+              </form>
+            </div>
+            </div>
+          </div>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
-      <div class="row">
-      <div class="col-md-12">
-            <!-- The time line -->
-            <div class="timeline">
-              <!-- timeline time label -->
-              <?php foreach($data['surec'] as $todo):?>
-              <div class="time-label">
-                <span class="bg-info"><?= date('d.m.Y', strtotime($todo['start_date']))?></span>
-              </div>
-              <!-- /.timeline-label -->
-              <!-- timeline item -->
-              <div>
-                <i class="fa fa-angle-double-right bg-light"></i>
-                <div class="timeline-item">
-                  <span class="time"><i class="fas fa-clock"></i> <?= date('H:i', strtotime($todo['start_date']))?></span>
-                  <h3 class="timeline-header">
-                    <span class="badge" style="color: #FFFFFF; background-color: <?= $todo['color']?>"> <?= $todo['category_title'];?> </span>
-                    <?= $todo['title']?>
-                  </h3>
-                  <div class="timeline-body"><?= $todo['description']?></div>
-                  </br>
-                  <span class="badge" style="color: #FFFFFF; background-color: <?= $todo['color']?>"><?= $todo['progress']; ?>%</span>
-                    <div class="progress progress-xs progress-striped active">
-                      <div class="progress-bar" style="color: #FFFFFF; background-color: <?= $todo['color']?>; width:<?= $todo['progress']; ?>%"></div>
-                    </div>
-                  
-
-                  <div class="timeline-footer">
-                    <a href="<?= url('todo/edit/'.$todo['id']); ?>" class="btn btn-sm" style="color: #FFFFFF; background-color: <?= $todo['color']?>">Git</a>
-                  </div>
-                </div>
-              </div>
-              <!-- END timeline item -->
-              <?php endforeach;?>
-              <div>
-                <i class="fas fa-clock bg-gray"></i>
-              </div>
-            </div>
-          </div>
-      </div>
     </div>
     <!-- /.content -->
   </div>
@@ -247,7 +248,65 @@
 <script src="<?= assets('plugins/jquery/jquery.min.js')?>"></script>
 <!-- Bootstrap 4 -->
 <script src="<?= assets('plugins/bootstrap/js/bootstrap.bundle.min.js')?>"></script>
+<!-- SweetAlert -->
+<script src="<?= assets('plugins/sweetalert2/sweetalert2.all.js')?>"></script> 
 <!-- AdminLTE App -->
 <script src="<?= assets('js/adminlte.min.js')?>"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js" integrity="sha512-TjBzDQIDnc6pWyeM1bhMnDxtWH0QpOXMcVooglXrali/Tj7W569/wd4E8EDjk1CwOAOPSJon1VfcEt1BI4xIrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+  const todo = document.getElementById('todo_add_form');
+  
+  todo.addEventListener('submit', (e) => {
+    // console.log('test');
+    let title = document.getElementById('title').value;
+    let description = document.getElementById('description').value;
+    let category_id = document.getElementById('category_id').value;
+    let color = document.getElementById('color').value;
+    let start_date = document.getElementById('start_date').value;
+    let end_date = document.getElementById('end_date').value;
+    let start_date_time = document.getElementById('start_date_time').value;
+    let end_date_time = document.getElementById('end_date_time').value;
+    let status = document.getElementById('status').value;
+    let progress = document.getElementById('progress').value;
+    
+    let formData = new FormData();
+
+    formData.append('title', title );
+    formData.append('description', description );
+    formData.append('category_id', category_id );
+    formData.append('color', color );
+    formData.append('start_date', start_date );
+    formData.append('end_date', end_date );
+    formData.append('start_date_time', start_date_time );
+    formData.append('end_date_time', end_date_time );
+    formData.append('status', status );
+    formData.append('progress', progress );
+
+
+    axios.post('<?= url('api/addtodo') ?>', formData).then(response => {
+      
+      if (response.data.redirect) {
+        // console.log(response.data.redirect);
+        window.location.href = response.data.redirect;
+      } else {
+
+        Swal.fire(
+        response.data.title,
+        response.data.msg,
+        response.data.status,
+
+        );
+
+      }
+
+      
+
+        console.log(response)
+    }).catch(error => console.log(error))
+    e.preventDefault();
+  })
+
+</script>
 </body>
 </html>
