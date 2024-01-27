@@ -31,6 +31,7 @@
             addSession('id', $user['id']);
             addSession('name', $user['name']);
             addSession('surname', $user['surname']);
+            addSession('password', $user['password']);
             addSession('email', $user['email']);
             addSession('fullname', $user['fullname']);
             addSession('login', True);

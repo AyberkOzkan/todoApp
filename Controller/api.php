@@ -240,4 +240,124 @@
         echo json_encode($array);
     }
 
+    if (route(1) == 'profile') {
+
+        $post = filter($_POST);
+        
+        if (!$post['isim']) {
+            $status = 'error';
+                    $title = 'Ops! Dikkat';
+                    $msg = 'Lütfen isminizi giriniz.';
+                    echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+                    exit();
+        } elseif(!$post['soyisim']) {
+                    $status = 'error';
+                    $title = 'Ops! Dikkat';
+                    $msg = 'Lütfen soyisminizi giriniz.';
+                    echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+                    exit();
+        } elseif (!$post['email']) {
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Lütfen e-posta adresinizi giriniz.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+        }
+
+
+        $id = getSession('id');
+        $name = $post['isim'];
+        $surname = $post['soyisim'];
+        $email = $post['email'];
+
+        $q = $db->query("UPDATE users SET email= '$email', name='$name', surname='$surname' WHERE users.id= '$id' ");
+
+
+        if ($q) {
+
+            addSession('name', $name);
+            addSession('surname', $surname);
+            addSession('email', $email);
+            addSession('fullname', $name . ' ' . $surname);
+            
+            $status = 'success';
+            $title = 'Başarılı';
+            $msg = 'Profiliniz güncellendi.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+        } else {
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Bir hata meydana geldi.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+            
+        }
+
+        
+    }
+
+    
+    if (route(1) == 'passwordchange') {
+        
+        $post = filter($_POST);
+
+        if (!$post['old_password'] || (getSession('password') !== md5($post['old_password'])) ) {
+            
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Lütfen şuanda kullanmakta olduğunuz şifreyi doğru bir şekilde giriniz.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+
+        }
+
+        $kucuk = preg_match('#[A-Z]#', $post['password']) ;
+        $buyuk = preg_match('#[a-z]#', $post['password']) ;
+        $sayi =  preg_match('#[0-9]#', $post['password']) ;
+        
+        if (!$post['password'] || !$kucuk || !$buyuk || !$sayi || strlen($post['password']) < 6) {
+                        
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Şifreniz en az 6 karakter olmalı ve mutlaka büyük, küçük ve sayı içermelidir.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+    
+        }
+        if (!$post['password'] || !$post['password_again'] || $post['password'] !== $post['password_again'] ) {
+            
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Girilen yeni şifreniz birbiriyle uyuşmuyor.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+  
+        }
+
+        $p = md5($post['password']);
+        $id = getSession('id');
+        $update_password = $db->query("UPDATE users SET password= '$p' WHERE users.id= '$id'  " );
+
+        if ($update_password) {
+
+            addSession('password', $p);
+
+            $status = 'success';
+            $title = 'Başarılı';
+            $msg = 'Şifreniz başarıyla değiştirildi.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+        } else {
+            $status = 'error';
+            $title = 'Ops! Dikkat';
+            $msg = 'Bir hata meydana geldi.';
+            echo json_encode(['status' => $status, 'title' => $title, 'msg' => $msg]);
+            exit();
+            
+        }
+        
+    }
+
+    
 ?>

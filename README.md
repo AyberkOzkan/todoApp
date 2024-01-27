@@ -46,3 +46,10 @@
 - start_date
 - created_date
 - updated_date
+
+
+-----
+[Patika](https://www.patika.dev)
+- Bu proje fonksiyonel olarak MVC yapısı oluşturularak yapılmıştır. 
+  
+![todoapp](todoapp.PNG)
